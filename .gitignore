@@ -1,0 +1,18 @@
+# Sensitive configuration
+config.properties
+
+# Build outputs
+classes/
+*.class
+
+# Generated PDFs and logs
+tickets/*.pdf
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Frontend dependencies and builds
+payment-website/node_modules/
+payment-website/dist/
