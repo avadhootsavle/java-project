@@ -5,20 +5,20 @@ import com.google.zxing.*;
 import com.google.zxing.common.*;
 import com.google.zxing.qrcode.*;
 
-// shows the total fare and a QR code, customer scans it with the phone and pays on the demo website
-// seats are booked only after "Payment Done"
+
+
 public class PaymentFrame extends Frame implements ActionListener, WindowListener
 {
-    Label l1, l3, l4, l5, l7, statusLabel;
+    Label l1, l3, l4, l5, l6, l7, statusLabel;
     Button retryBtn, cancelBtn;
     Panel p1, p2;
     Canvas qrCanvas;
-    BitMatrix qr = null; // black and white squares of the QR code (made by ZXing)
+    BitMatrix qr = null;
     PassengerDetailsFrame detailsFrame;
     int customerId, flightId, count;
     String seats, ref = "", pnr = "";
-    double amount;
-    boolean done = false; // true after the booking is confirmed
+    double fare, gst, amount;
+    boolean done = false;
 
     public PaymentFrame(PassengerDetailsFrame pd, int cid, int fid, String s, int c, double a)
     {
@@ -27,31 +27,34 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         flightId = fid;
         seats = s;
         count = c;
-        amount = a;
+        fare = a;
+        gst = fare * 5 / 100;
+        amount = fare + gst;
 
-        // setting the layout
-        setLayout(new GridLayout(1, 2, 10, 0)); // left side details, right side QR code
 
-        // creating objects
+        setLayout(new GridLayout(1, 2, 10, 0));
+
+
         l1 = new Label("QR PAYMENT", Label.CENTER);
         l3 = new Label("");
         l4 = new Label("Seats: " + seats + "   (" + count + " passengers)");
-        l5 = new Label("Total Fare: Rs. " + String.format("%.2f", amount));
+        l5 = new Label("Base Fare: Rs. " + String.format("%.2f", fare) + "   +   GST (5%): Rs. " + String.format("%.2f", gst));
+        l6 = new Label("Total Amount: Rs. " + String.format("%.2f", amount));
         l7 = new Label("Scan the QR code with your phone");
         statusLabel = new Label("");
         retryBtn = new Button("Retry Payment");
         cancelBtn = new Button("Cancel");
-        p1 = new Panel(new GridLayout(7, 1, 0, 5));
+        p1 = new Panel(new GridLayout(8, 1, 0, 5));
         p2 = new Panel(new GridLayout(1, 2, 10, 0));
 
-        // canvas that draws the QR code square by square
+
         qrCanvas = new Canvas()
         {
             public void paint(Graphics g)
             {
                 if (qr == null)
                     return;
-                int box = (Math.min(getWidth(), getHeight()) - 20) / qr.getWidth(); // size of one small square
+                int box = (Math.min(getWidth(), getHeight()) - 20) / qr.getWidth();
                 int x0 = (getWidth() - box * qr.getWidth()) / 2;
                 int y0 = (getHeight() - box * qr.getHeight()) / 2;
                 g.setColor(Color.white);
@@ -64,36 +67,37 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
             }
         };
 
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
         l1.setForeground(Color.white);
         l1.setFont(new Font("Arial", Font.BOLD, 22));
-        l5.setFont(new Font("Arial", Font.BOLD, 20));
+        l6.setFont(new Font("Arial", Font.BOLD, 20));
         statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
-        // event handling
+
         retryBtn.addActionListener(this);
         cancelBtn.addActionListener(this);
 
-        // adding components
+
         p2.add(retryBtn);
         p2.add(cancelBtn);
         p1.add(l1);
         p1.add(l3);
         p1.add(l4);
         p1.add(l5);
+        p1.add(l6);
         p1.add(l7);
         p1.add(statusLabel);
         p1.add(p2);
         add(p1);
         add(qrCanvas);
 
-        // closing the window is same as Cancel
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("Payment");
         setSize(900, 450);
         setLocationRelativeTo(null);
@@ -102,12 +106,12 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         newPayment();
     }
 
-    // saves a new PENDING payment in MySQL and shows its QR code
+
     void newPayment()
     {
         try
         {
-            ref = "PAY" + TicketService.randomCode(6); // payment reference like PAY4K7M2X
+            ref = "PAY" + TicketService.randomCode(6);
             Connection con = DBConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("INSERT INTO payments (payment_ref, customer_id, flight_id, seats, passengers, amount, status) VALUES (?, ?, ?, ?, ?, ?, 'PENDING')");
             ps.setString(1, ref);
@@ -119,11 +123,11 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
             ps.executeUpdate();
             con.close();
 
-            // the link of the payment website is put inside the QR code
+
             String url = "http://" + PaymentServer.getLaptopIp() + ":5173/?ref=" + ref;
             qr = new QRCodeWriter().encode(url, BarcodeFormat.QR_CODE, 1, 1);
             qrCanvas.repaint();
-            PaymentServer.current = this; // so the server can tell this window when payment is done
+            PaymentServer.current = this;
             l3.setText("Payment Ref: " + ref);
             statusLabel.setForeground(new Color(200, 120, 0));
             statusLabel.setText("Waiting for payment on phone...");
@@ -136,7 +140,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         }
     }
 
-    // called by PaymentServer when "Payment Done" is clicked: books the seats and returns the PNR
+
     public String paymentSuccess() throws Exception
     {
         try
@@ -145,7 +149,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         }
         catch (Exception e)
         {
-            // payment was done but seats are gone, so payment is marked FAILED (demo, no money taken)
+
             PaymentServer.update("UPDATE payments SET status = 'FAILED' WHERE payment_ref = ?", ref);
             statusLabel.setForeground(Color.red);
             statusLabel.setText("Booking failed: " + e.getMessage());
@@ -153,7 +157,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
             throw e;
         }
 
-        // saving the PNR with the payment
+
         Connection con = DBConnection.getConnection();
         PreparedStatement ps = con.prepareStatement("UPDATE payments SET pnr = ? WHERE payment_ref = ?");
         ps.setString(1, pnr);
@@ -167,7 +171,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         return pnr;
     }
 
-    // called by PaymentServer after replying to the phone, makes the PDF ticket and emails it
+
     public void makeTicket()
     {
         String msg = "Confirmed! PNR: " + pnr;
@@ -187,7 +191,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         PaymentServer.current = null;
     }
 
-    // called by PaymentServer when "Payment Failed" is clicked on the phone
+
     public void paymentFailed()
     {
         statusLabel.setForeground(Color.red);
@@ -195,13 +199,13 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         retryBtn.setEnabled(true);
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
 
         if (btn == retryBtn)
-            newPayment(); // old payment stays FAILED, a new payment with a new QR code is made
+            newPayment();
         else
             closeWindow();
     }
@@ -209,17 +213,17 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
     void closeWindow()
     {
         if (done)
-            detailsFrame.bookingDone(); // closes passenger and seat windows also
+            detailsFrame.bookingDone();
         else
         {
-            // payment not done, so it is marked FAILED and no seat is booked
+
             PaymentServer.update("UPDATE payments SET status = 'FAILED' WHERE payment_ref = ? AND status = 'PENDING'", ref);
             PaymentServer.current = null;
         }
         dispose();
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         closeWindow();

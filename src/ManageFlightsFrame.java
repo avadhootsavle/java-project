@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// view all flights, search, add, update and delete flights
+
 public class ManageFlightsFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3;
@@ -10,15 +10,15 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
     List flightList;
     Button searchBtn, showAllBtn, addBtn, updateBtn, deleteBtn, backBtn;
     Panel p1, p2, p3;
-    int[] flightIds = new int[500]; // id of every row in the list
-    int total = 0;                  // number of rows in the list
+    int[] flightIds = new int[500];
+    int total = 0;
 
     public ManageFlightsFrame()
     {
-        // setting the layout (no layout manager, every component gets x, y, width, height)
-        setLayout(new GridLayout(2, 1, 0, 5)); // top part with buttons, bottom part with the list
 
-        // creating objects
+        setLayout(new GridLayout(2, 1, 0, 5));
+
+
         l1 = new Label("MANAGE FLIGHTS", Label.CENTER);
         l2 = new Label("Flight No / ID");
         l3 = new Label(String.format(" %-4s %-7s %-10s %-22s %-17s %-11s %s", "ID", "Flight", "Airline", "Route", "Departure", "Price(Rs)", "Seats Left"));
@@ -34,7 +34,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         p1 = new Panel(new GridLayout(4, 1, 5, 8));
         p2 = new Panel(new GridLayout(1, 4, 10, 0));
         p3 = new Panel(new GridLayout(1, 4, 10, 0));
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -43,7 +43,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         l3.setFont(new Font("Monospaced", Font.BOLD, 14));
         flightList.setFont(new Font("Monospaced", Font.PLAIN, 14));
 
-        // event handling
+
         searchBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         addBtn.addActionListener(this);
@@ -51,7 +51,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         deleteBtn.addActionListener(this);
         backBtn.addActionListener(this);
 
-        // adding components
+
         p2.add(l2);
         p2.add(searchTf);
         p2.add(searchBtn);
@@ -67,10 +67,10 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         add(p1);
         add(flightList);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("Manage Flights");
         setSize(900, 600);
         setLocationRelativeTo(null);
@@ -79,7 +79,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         loadFlights("");
     }
 
-    // shows flights in the list, if search is empty it shows all flights
+
     public void loadFlights(String search)
     {
         flightList.removeAll();
@@ -98,7 +98,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
                 total++;
                 flightList.add(String.format("%-4d %-7s %-10s %-22s %-17s %-11.2f %d/%d", rs.getInt("flight_id"), rs.getString("flight_no"),
                         rs.getString("airline"), rs.getString("source") + " -> " + rs.getString("destination"),
-                        rs.getString("departure_time").substring(0, 16), rs.getDouble("price"), rs.getInt("available_seats"), rs.getInt("total_seats")));
+                        DateTimeFormat.format(rs.getTimestamp("departure_time")), rs.getDouble("price"), rs.getInt("available_seats"), rs.getInt("total_seats")));
             }
             con.close();
             if (total == 0)
@@ -111,7 +111,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         }
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -127,7 +127,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
             loadFlights("");
         }
         else if (btn == addBtn)
-            new FlightFormFrame(this, 0); // 0 means new flight
+            new FlightFormFrame(this, 0);
         else if (i < 0)
             new MessageBox(this, "Please select a flight from the list first");
         else if (btn == updateBtn)
@@ -136,7 +136,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         {
             try
             {
-                // deletes only if there are no confirmed bookings (seats are deleted by ON DELETE CASCADE)
+
                 Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement("DELETE FROM flights WHERE flight_id = ? AND NOT EXISTS "
                         + "(SELECT * FROM bookings WHERE flight_id = ? AND status = 'CONFIRMED')");
@@ -157,7 +157,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         }
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();

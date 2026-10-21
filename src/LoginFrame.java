@@ -2,25 +2,25 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// one login window for both admin and customer
+
 public class LoginFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4;
     TextField userTf, passTf;
     Button loginBtn, registerBtn, backBtn;
-    String type; // "Admin" or "Customer"
+    String type;
 
     public LoginFrame(String t)
     {
         type = t;
 
-        // setting the layout (2 columns, like label and text field)
+
         if (type.equals("Admin"))
             setLayout(new GridLayout(4, 2, 0, 10));
         else
             setLayout(new GridLayout(5, 2, 0, 10));
 
-        // creating objects
+
         l1 = new Label("   " + type.toUpperCase() + " LOGIN");
         l4 = new Label("");
         if (type.equals("Admin"))
@@ -34,7 +34,7 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
         registerBtn = new Button("Register (new user)");
         backBtn = new Button("Back");
 
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -43,12 +43,12 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
         l4.setBackground(new Color(22, 54, 110));
         passTf.setEchoChar('*');
 
-        // event handling
+
         loginBtn.addActionListener(this);
         registerBtn.addActionListener(this);
         backBtn.addActionListener(this);
 
-        // adding components
+
         add(l1);
         add(l4);
         add(l2);
@@ -57,32 +57,36 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
         add(passTf);
         add(loginBtn);
         add(backBtn);
-        if (type.equals("Customer"))
-            add(registerBtn); // only customers can register
+        if (type.equals("Customer")){
+            add(registerBtn);
+        }
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle(type + " Login");
         setSize(450, 280);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
         String user = userTf.getText().trim();
         String pass = passTf.getText();
 
-        if (btn == backBtn)
+        if (btn == backBtn){
             dispose();
-        else if (btn == registerBtn)
-            new RegisterFrame();
-        else if (user.isEmpty() || pass.isEmpty())
-            new MessageBox(this, "Please fill both the fields");
+        }
+        else if (btn == registerBtn){
+          RegisterFrame rf =  new RegisterFrame();
+        }
+        else if (user.isEmpty() || pass.isEmpty()){
+          MessageBox mb =  new MessageBox(this, "Please fill both the fields");
+        }
         else
         {
             try
@@ -95,7 +99,7 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
                 ps.setString(1, user);
                 ResultSet rs = ps.executeQuery();
 
-                // password is checked in java so that it is case sensitive
+
                 if (!rs.next() || !rs.getString("password").equals(pass))
                     new MessageBox(this, "Wrong login details");
                 else
@@ -116,7 +120,7 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
         }
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();

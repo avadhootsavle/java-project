@@ -10,10 +10,10 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
 
     public RegisterFrame()
     {
-        // setting the layout (2 columns, like label and text field)
+
         setLayout(new GridLayout(7, 2, 0, 10));
 
-        // creating objects
+
         l1 = new Label("   CREATE ACCOUNT");
         l7 = new Label("");
         l2 = new Label("    Full Name");
@@ -29,7 +29,7 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         registerBtn = new Button("Register");
         backBtn = new Button("Back");
 
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -39,11 +39,11 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         passTf.setEchoChar('*');
         confirmTf.setEchoChar('*');
 
-        // event handling
+
         registerBtn.addActionListener(this);
         backBtn.addActionListener(this);
 
-        // adding components
+
         add(l1);
         add(l7);
         add(l2);
@@ -59,17 +59,17 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         add(registerBtn);
         add(backBtn);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("Customer Registration");
         setSize(480, 450);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -78,7 +78,7 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         String phone = phoneTf.getText().trim();
         String pass = passTf.getText();
 
-        // checking the inputs
+
         if (btn == backBtn)
             dispose();
         else if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || pass.isEmpty())
@@ -114,7 +114,7 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         }
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();

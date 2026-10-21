@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react'
-
-// Java payment server runs on the same laptop (port 8085)
 const API = 'http://' + window.location.hostname + ':8085/api/payment'
 
 function App() {
-  // payment reference comes from the QR code link, eg. ?ref=PAY4K7M2X
   const ref = new URLSearchParams(window.location.search).get('ref')
 
   const [payment, setPayment] = useState(null)
   const [error, setError] = useState('')
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)
-
-  // load payment details when the page opens
   useEffect(() => {
     loadDetails()
   }, [])
@@ -30,8 +25,6 @@ function App() {
       })
       .catch(() => setError('Cannot connect to the airline server. Make sure your phone and laptop are on the same Wi-Fi.'))
   }
-
-  // tells the Java server: success, fail or retry
   function send(action) {
     setBusy(true)
     fetch(API + '/' + action + '?ref=' + ref, { method: 'POST' })
@@ -50,7 +43,7 @@ function App() {
   return (
     <div className="page">
       <header className="header">
-        <div className="logo">✈ SkyWay Airlines</div>
+        <div className="logo">✈ Gowardhan Airlines</div>
         <div className="sub">Flight Ticket Payment</div>
       </header>
 
@@ -87,7 +80,7 @@ function App() {
           </table>
 
           <div className="amount">
-            <span>Total Amount</span>
+            <span>Total Amount (incl. 5% GST)</span>
             ₹ {payment.amount.toFixed(2)}
           </div>
 
@@ -122,7 +115,7 @@ function App() {
         </div>
       )}
 
-      <footer>SkyWay Airline Reservation System · Student Project</footer>
+      <footer>Gowardhan Airline Reservation System · Student Project</footer>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// customer can see his bookings, search by PNR, cancel and get the ticket again
+
 public class MyBookingsFrame extends Frame implements ActionListener, ItemListener, WindowListener
 {
     Label l1, l2, l3;
@@ -12,19 +12,19 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
     Button searchBtn, showAllBtn, cancelBtn, ticketBtn, backBtn;
     Panel p1, p2, p3;
     int customerId;
-    String[] pnrs = new String[500];   // pnr of every row in the list
-    int[] bookingIds = new int[500];   // booking_id of every row (one row = one passenger)
-    String[] names = new String[500];  // passenger name of every row
-    int total = 0;                     // number of rows in the list
+    String[] pnrs = new String[500];
+    int[] bookingIds = new int[500];
+    String[] names = new String[500];
+    int total = 0;
 
     public MyBookingsFrame(int id)
     {
         customerId = id;
 
-        // setting the layout (no layout manager, every component gets x, y, width, height)
-        setLayout(new GridLayout(3, 1, 0, 5)); // top part, list of bookings, details of the selected booking
 
-        // creating objects
+        setLayout(new GridLayout(3, 1, 0, 5));
+
+
         l1 = new Label("MY BOOKINGS", Label.CENTER);
         l2 = new Label("PNR", Label.RIGHT);
         l3 = new Label(String.format(" %-7s %-7s %-22s %-17s %-5s %-18s %s", "PNR", "Flight", "Route", "Departure", "Seat", "Passenger", "Status"));
@@ -40,7 +40,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         p1 = new Panel(new GridLayout(4, 1, 5, 8));
         p2 = new Panel(new GridLayout(1, 4, 10, 0));
         p3 = new Panel(new GridLayout(1, 3, 10, 0));
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -51,7 +51,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         detailsArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         detailsArea.setEditable(false);
 
-        // event handling
+
         searchBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         cancelBtn.addActionListener(this);
@@ -59,7 +59,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         backBtn.addActionListener(this);
         bookingList.addItemListener(this);
 
-        // adding components
+
         p2.add(l2);
         p2.add(pnrTf);
         p2.add(searchBtn);
@@ -75,10 +75,10 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         add(bookingList);
         add(detailsArea);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("My Bookings");
         setSize(1000, 740);
         setLocationRelativeTo(null);
@@ -87,7 +87,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         loadBookings("");
     }
 
-    // shows bookings of this customer, if pnr is empty it shows all of them
+
     void loadBookings(String pnr)
     {
         bookingList.removeAll();
@@ -109,7 +109,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
                 names[total] = rs.getString("passenger_name");
                 total++;
                 bookingList.add(String.format("%-7s %-7s %-22s %-17s %-5s %-18s %s", rs.getString("pnr"), rs.getString("flight_no"),
-                        rs.getString("source") + " -> " + rs.getString("destination"), rs.getString("departure_time").substring(0, 16),
+                        rs.getString("source") + " -> " + rs.getString("destination"), DateTimeFormat.format(rs.getTimestamp("departure_time")),
                         rs.getString("seat_no"), rs.getString("passenger_name"), rs.getString("status")));
             }
             con.close();
@@ -122,7 +122,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -141,7 +141,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             new MessageBox(this, "Please select a booking from the list first");
         else if (btn == ticketBtn)
         {
-            // makes the PDF again and emails it
+
             String msg = "";
             try
             {
@@ -160,16 +160,16 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             cancelTicket(i);
     }
 
-    // cancels the ticket of one passenger in one transaction (other passengers of the PNR are not cancelled)
+
     void cancelTicket(int i)
     {
         Connection con = null;
         try
         {
             con = DBConnection.getConnection();
-            con.setAutoCommit(false); // start transaction
+            con.setAutoCommit(false);
 
-            // 1. lock the booking row and check it
+
             PreparedStatement ps1 = con.prepareStatement("SELECT b.*, f.departure_time < NOW() AS departed FROM bookings b "
                     + "JOIN flights f ON b.flight_id = f.flight_id WHERE b.booking_id = ? AND b.customer_id = ? FOR UPDATE");
             ps1.setInt(1, bookingIds[i]);
@@ -180,7 +180,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             if (rs.getInt("departed") == 1)
                 throw new Exception("Flight has already departed, cannot cancel");
 
-            // 2. mark booking cancelled, free the seat and increase available seats
+
             PreparedStatement ps2 = con.prepareStatement("UPDATE bookings SET status = 'CANCELLED' WHERE booking_id = ?");
             ps2.setInt(1, bookingIds[i]);
             ps2.executeUpdate();
@@ -191,7 +191,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             ps4.setInt(1, rs.getInt("flight_id"));
             ps4.executeUpdate();
 
-            // 3. save everything
+
             con.commit();
             con.close();
             new MessageBox(this, "Ticket of " + names[i] + " cancelled. Seat has been released.");
@@ -199,7 +199,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
         catch (Exception e)
         {
-            // undo all the steps
+
             try
             {
                 con.rollback();
@@ -213,7 +213,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
     }
 
-    // when a booking is clicked in the list, show its details
+
     public void itemStateChanged(ItemEvent e)
     {
         try
@@ -226,7 +226,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();

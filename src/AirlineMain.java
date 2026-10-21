@@ -2,26 +2,26 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// first window of the project
+
 public class AirlineMain extends Frame implements ActionListener, WindowListener
 {
-    
+
     Label l1, l2;
     Button adminBtn, customerBtn, exitBtn;
 
     public AirlineMain()
     {
-        // setting the layout
+
         setLayout(new GridLayout(5, 1, 10, 10));
 
-        // creating objects
-        l1 = new Label("SKYWAY AIRLINES", Label.CENTER);
+
+        l1 = new Label("Gowardhan Airlines", Label.CENTER);
         l2 = new Label("Please choose how you want to login", Label.CENTER);
         adminBtn = new Button("Admin Login");
         customerBtn = new Button("Customer Login");
         exitBtn = new Button("Exit");
 
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -29,28 +29,28 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         l1.setFont(new Font("Arial", Font.BOLD, 26));
         l2.setFont(new Font("Arial", Font.BOLD, 15));
 
-        // event handling
+
         adminBtn.addActionListener(this);
         customerBtn.addActionListener(this);
         exitBtn.addActionListener(this);
 
-        // adding components
+
         add(l1);
         add(l2);
         add(adminBtn);
         add(customerBtn);
         add(exitBtn);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
-        setTitle("SkyWay Airlines");
+
+        setTitle("Gowardhan Airlines");
         setSize(450, 360);
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // checking the database connection
+
         try
         {
             Connection con = DBConnection.getConnection();
@@ -64,22 +64,24 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         }
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
 
-        if (btn == adminBtn)
-            new LoginFrame("Admin");
-        else if (btn == customerBtn)
-            new LoginFrame("Customer");
+        if (btn == adminBtn){
+          LoginFrame lf =  new LoginFrame("Admin");
+        }
+        else if (btn == customerBtn){
+          LoginFrame lf =   new LoginFrame("Customer");
+        }
         else
             System.exit(0);
     }
 
     public static void main(String args[])
     {
-        // keyboard shortcut: Ctrl + first letter of a button clicks that button (in every window)
+
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
         {
             public void eventDispatched(AWTEvent ev)
@@ -89,7 +91,7 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
                 if (ke.getID() != KeyEvent.KEY_PRESSED || !ke.isControlDown() || key < 'A' || key > 'Z')
                     return;
 
-                // finding the window in which the key was pressed
+
                 Component c = ke.getComponent();
                 while (c != null && !(c instanceof Window))
                     c = c.getParent();
@@ -105,11 +107,11 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
             }
         }, AWTEvent.KEY_EVENT_MASK);
 
-        PaymentServer.start(); // small HTTP server for the demo QR payment website
+        PaymentServer.start();
         new AirlineMain();
     }
 
-    // searches all panels of the window for a button whose label starts with the letter
+
     static Button findButton(Container box, int key)
     {
         Component[] list = box.getComponents();
@@ -127,7 +129,7 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         return null;
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         System.exit(0);

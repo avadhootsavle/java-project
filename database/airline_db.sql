@@ -1,5 +1,3 @@
--- Airline Reservation Management System
--- Import this file in phpMyAdmin (XAMPP) -> Import tab -> choose this file -> Go
 
 CREATE DATABASE IF NOT EXISTS airline_db;
 USE airline_db;
@@ -53,7 +51,7 @@ CREATE TABLE seats (
 
 CREATE TABLE bookings (
     booking_id INT AUTO_INCREMENT PRIMARY KEY,
-    pnr VARCHAR(10) NOT NULL,              -- same PNR for all passengers of one booking
+    pnr VARCHAR(10) NOT NULL,
     customer_id INT NOT NULL,
     flight_id INT NOT NULL,
     seat_id INT NOT NULL,
@@ -70,23 +68,21 @@ CREATE TABLE bookings (
     FOREIGN KEY (seat_id) REFERENCES seats(seat_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- dummy QR payments (demo only, no real money)
 CREATE TABLE IF NOT EXISTS payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
-    payment_ref VARCHAR(12) NOT NULL UNIQUE,      -- shown in QR code and website
+    payment_ref VARCHAR(12) NOT NULL UNIQUE,
     customer_id INT NOT NULL,
     flight_id INT NOT NULL,
-    seats VARCHAR(100) NOT NULL,                  -- eg. 1A, 1B
+    seats VARCHAR(100) NOT NULL,
     passengers INT NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     status ENUM('PENDING', 'SUCCESS', 'FAILED') NOT NULL DEFAULT 'PENDING',
-    pnr VARCHAR(10),                              -- filled after booking is confirmed
+    pnr VARCHAR(10),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
     FOREIGN KEY (flight_id) REFERENCES flights(flight_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ---------- sample data ----------
 
 INSERT INTO admins (username, password) VALUES ('admin', 'admin123');
 
@@ -98,7 +94,6 @@ INSERT INTO flights (flight_no, airline, source, destination, departure_time, ar
 ('6E202', 'IndiGo', 'Delhi', 'Mumbai', '2026-12-12 18:30:00', '2026-12-12 20:40:00', 3900.00, 12, 12),
 ('UK303', 'Vistara', 'Mumbai', 'Bangalore', '2026-12-15 06:45:00', '2026-12-15 08:30:00', 5200.00, 12, 12);
 
--- 12 seats for each sample flight (2 rows x 6 seats)
 INSERT INTO seats (flight_id, seat_no) VALUES
 (1,'1A'),(1,'1B'),(1,'1C'),(1,'1D'),(1,'1E'),(1,'1F'),(1,'2A'),(1,'2B'),(1,'2C'),(1,'2D'),(1,'2E'),(1,'2F'),
 (2,'1A'),(2,'1B'),(2,'1C'),(2,'1D'),(2,'1E'),(2,'1F'),(2,'2A'),(2,'2B'),(2,'2C'),(2,'2D'),(2,'2E'),(2,'2F'),

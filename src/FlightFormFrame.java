@@ -3,13 +3,13 @@ import java.awt.event.*;
 import java.sql.*;
 import java.time.*;
 
-// same window is used to add a new flight (flightId = 0) and to update a flight
+
 public class FlightFormFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4, l5, l6, l7, l8, l9, l10;
     TextField noTf, airlineTf, sourceTf, destTf, depTf, arrTf, priceTf, seatsTf;
     Button saveBtn, backBtn;
-    ManageFlightsFrame parent; // to refresh the list after saving
+    ManageFlightsFrame parent;
     int flightId;
 
     public FlightFormFrame(ManageFlightsFrame mf, int id)
@@ -17,10 +17,10 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         parent = mf;
         flightId = id;
 
-        // setting the layout (2 columns, like label and text field)
+
         setLayout(new GridLayout(10, 2, 0, 8));
 
-        // creating objects
+
         if (flightId == 0)
             l1 = new Label("   ADD NEW FLIGHT");
         else
@@ -30,8 +30,8 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         l3 = new Label("    Airline");
         l4 = new Label("    Source");
         l5 = new Label("    Destination");
-        l6 = new Label("    Departure (yyyy-MM-dd HH:mm)");
-        l7 = new Label("    Arrival (yyyy-MM-dd HH:mm)");
+        l6 = new Label("    Departure (dd-MM-yyyy HH:mm)");
+        l7 = new Label("    Arrival (dd-MM-yyyy HH:mm)");
         l8 = new Label("    Ticket Price (Rs)");
         l9 = new Label("    Total Seats (max 180)");
         noTf = new TextField(18);
@@ -45,7 +45,7 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         saveBtn = new Button("Save Flight");
         backBtn = new Button("Back");
 
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -53,11 +53,11 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         l1.setFont(new Font("Arial", Font.BOLD, 22));
         l10.setBackground(new Color(22, 54, 110));
 
-        // event handling
+
         saveBtn.addActionListener(this);
         backBtn.addActionListener(this);
 
-        // adding components
+
         add(l1);
         add(l10);
         add(l2);
@@ -79,16 +79,16 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         add(saveBtn);
         add(backBtn);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("Flight Details");
         setSize(600, 560);
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // update: showing the old values of the flight
+
         if (flightId != 0)
         {
             try
@@ -102,8 +102,8 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
                 airlineTf.setText(rs.getString("airline"));
                 sourceTf.setText(rs.getString("source"));
                 destTf.setText(rs.getString("destination"));
-                depTf.setText(rs.getString("departure_time").substring(0, 16));
-                arrTf.setText(rs.getString("arrival_time").substring(0, 16));
+                depTf.setText(DateTimeFormat.format(rs.getTimestamp("departure_time")));
+                arrTf.setText(DateTimeFormat.format(rs.getTimestamp("arrival_time")));
                 priceTf.setText("" + rs.getDouble("price"));
                 seatsTf.setText("" + rs.getInt("total_seats"));
                 con.close();
@@ -115,7 +115,7 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         }
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -125,20 +125,20 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
             return;
         }
 
-        // checking the values
+
         LocalDateTime dep, arr;
         double price;
         int seats;
         try
         {
-            dep = LocalDateTime.parse(depTf.getText().trim().replace(" ", "T"));
-            arr = LocalDateTime.parse(arrTf.getText().trim().replace(" ", "T"));
+            dep = DateTimeFormat.parse(depTf.getText());
+            arr = DateTimeFormat.parse(arrTf.getText());
             price = Double.parseDouble(priceTf.getText().trim());
             seats = Integer.parseInt(seatsTf.getText().trim());
         }
         catch (Exception ex)
         {
-            new MessageBox(this, "Please enter correct values\nTime format: yyyy-MM-dd HH:mm\nPrice and seats must be numbers");
+            new MessageBox(this, "Please enter correct values\nTime format: dd-MM-yyyy HH:mm\nPrice and seats must be numbers");
             return;
         }
 
@@ -156,20 +156,20 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
             saveFlight(price, seats);
     }
 
-    // adds or updates the flight in one transaction, seats are made again if total seats is changed
+
     void saveFlight(double price, int seats)
     {
         Connection con = null;
         try
         {
             con = DBConnection.getConnection();
-            con.setAutoCommit(false); // start transaction
+            con.setAutoCommit(false);
             int available = seats;
             boolean makeSeats = true;
 
             if (flightId != 0)
             {
-                // lock the flight row, seats can be changed only when there are no confirmed bookings
+
                 PreparedStatement ps1 = con.prepareStatement("SELECT total_seats, available_seats, (SELECT COUNT(*) FROM bookings "
                         + "WHERE flight_id = ? AND status = 'CONFIRMED') AS booked FROM flights WHERE flight_id = ? FOR UPDATE");
                 ps1.setInt(1, flightId);
@@ -201,8 +201,8 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
             ps.setString(2, airlineTf.getText().trim());
             ps.setString(3, sourceTf.getText().trim());
             ps.setString(4, destTf.getText().trim());
-            ps.setString(5, depTf.getText().trim());
-            ps.setString(6, arrTf.getText().trim());
+            ps.setTimestamp(5, Timestamp.valueOf(DateTimeFormat.parse(depTf.getText())));
+            ps.setTimestamp(6, Timestamp.valueOf(DateTimeFormat.parse(arrTf.getText())));
             ps.setDouble(7, price);
             ps.setInt(8, seats);
             ps.setInt(9, available);
@@ -210,13 +210,13 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
                 ps.setInt(10, flightId);
             ps.executeUpdate();
 
-            // new flight: flight_id is AUTO_INCREMENT, so we get it back from MySQL
+
             int id = flightId;
             ResultSet keys = ps.getGeneratedKeys();
             if (flightId == 0 && keys.next())
                 id = keys.getInt(1);
 
-            // making seats like 1A, 1B ... 1F, 2A ... (6 seats in a row)
+
             PreparedStatement ps3 = con.prepareStatement("INSERT INTO seats (flight_id, seat_no) VALUES (?, ?)");
             for (int i = 0; makeSeats && i < seats; i++)
             {
@@ -225,7 +225,7 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
                 ps3.executeUpdate();
             }
 
-            con.commit(); // save everything
+            con.commit();
             con.close();
             new MessageBox(this, "Flight saved successfully!\nFlight ID: " + id);
             parent.loadFlights("");
@@ -233,7 +233,7 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         }
         catch (Exception e)
         {
-            // undo all changes
+
             try
             {
                 con.rollback();
@@ -247,7 +247,7 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         }
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();

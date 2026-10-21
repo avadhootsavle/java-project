@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// shows all flights added by admin, customer selects one and books it
+
 public class AvailableFlightsFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4;
@@ -11,18 +11,18 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
     Button filterBtn, showAllBtn, bookBtn, backBtn;
     Panel p1, p2, p3;
     int customerId;
-    int[] flightIds = new int[500];     // id of every row in the list
-    String[] status = new String[500];  // Available / Full / Departed of every row
-    int total = 0;                      // number of rows in the list
+    int[] flightIds = new int[500];
+    String[] status = new String[500];
+    int total = 0;
 
     public AvailableFlightsFrame(int id)
     {
         customerId = id;
 
-        // setting the layout (no layout manager, every component gets x, y, width, height)
-        setLayout(new GridLayout(2, 1, 0, 5)); // top part with filter and buttons, bottom part with the list
 
-        // creating objects
+        setLayout(new GridLayout(2, 1, 0, 5));
+
+
         l1 = new Label("AVAILABLE FLIGHTS", Label.CENTER);
         l2 = new Label("From", Label.RIGHT);
         l3 = new Label("To", Label.RIGHT);
@@ -38,7 +38,7 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         p1 = new Panel(new GridLayout(4, 1, 5, 8));
         p2 = new Panel(new GridLayout(1, 6, 10, 0));
         p3 = new Panel(new GridLayout(1, 2, 10, 0));
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -49,13 +49,13 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         fromChoice.add("All");
         toChoice.add("All");
 
-        // event handling
+
         filterBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         bookBtn.addActionListener(this);
         backBtn.addActionListener(this);
 
-        // adding components
+
         p2.add(l2);
         p2.add(fromChoice);
         p2.add(l3);
@@ -71,16 +71,16 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         add(p1);
         add(flightList);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("Available Flights");
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // filling both Choice boxes with city names from database
+
         try
         {
             Connection con = DBConnection.getConnection();
@@ -100,7 +100,7 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         loadFlights("All", "All");
     }
 
-    // shows all flights ("All" means any city), departed flights are shown but cannot be booked
+
     void loadFlights(String from, String to)
     {
         flightList.removeAll();
@@ -127,7 +127,7 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
                 status[total] = st;
                 total++;
                 flightList.add(String.format("%-4d %-7s %-10s %-22s %-17s %-11.2f %-11s %s", rs.getInt("flight_id"), rs.getString("flight_no"),
-                        rs.getString("airline"), rs.getString("source") + " -> " + rs.getString("destination"), rs.getString("departure_time").substring(0, 16),
+                        rs.getString("airline"), rs.getString("source") + " -> " + rs.getString("destination"), DateTimeFormat.format(rs.getTimestamp("departure_time")),
                         rs.getDouble("price"), rs.getInt("available_seats") + "/" + rs.getInt("total_seats"), st));
             }
             con.close();
@@ -141,7 +141,7 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         }
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -165,7 +165,7 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
             new SeatSelectionFrame(this, customerId, flightIds[i]);
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();

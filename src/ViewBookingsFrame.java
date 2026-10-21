@@ -2,7 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-// admin can see all bookings and search a booking by PNR
+
 public class ViewBookingsFrame extends Frame implements ActionListener, ItemListener, WindowListener
 {
     Label l1, l2, l3;
@@ -11,15 +11,15 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
     TextArea detailsArea;
     Button searchBtn, showAllBtn, backBtn;
     Panel p1, p2;
-    String[] pnrs = new String[1000]; // pnr of every row in the list
-    int total = 0;                    // number of rows in the list
+    String[] pnrs = new String[1000];
+    int total = 0;
 
     public ViewBookingsFrame()
     {
-        // setting the layout (no layout manager, every component gets x, y, width, height)
-        setLayout(new GridLayout(3, 1, 0, 5)); // top part, list of bookings, details of the selected booking
 
-        // creating objects
+        setLayout(new GridLayout(3, 1, 0, 5));
+
+
         l1 = new Label("ALL BOOKINGS", Label.CENTER);
         l2 = new Label("PNR", Label.RIGHT);
         l3 = new Label(String.format(" %-7s %-7s %-22s %-17s %-5s %-10s %s", "PNR", "Flight", "Route", "Departure", "Seat", "Status", "Passenger"));
@@ -32,7 +32,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
 
         p1 = new Panel(new GridLayout(3, 1, 5, 8));
         p2 = new Panel(new GridLayout(1, 5, 10, 0));
-        // design
+
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -43,13 +43,13 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         detailsArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         detailsArea.setEditable(false);
 
-        // event handling
+
         searchBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         backBtn.addActionListener(this);
         bookingList.addItemListener(this);
 
-        // adding components
+
         p2.add(l2);
         p2.add(pnrTf);
         p2.add(searchBtn);
@@ -62,10 +62,10 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         add(bookingList);
         add(detailsArea);
 
-        // closing the window
+
         addWindowListener(this);
 
-        // creating the frame
+
         setTitle("All Bookings");
         setSize(900, 720);
         setLocationRelativeTo(null);
@@ -74,7 +74,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         loadBookings("");
     }
 
-    // shows bookings in the list, if pnr is empty it shows all bookings
+
     void loadBookings(String pnr)
     {
         bookingList.removeAll();
@@ -93,7 +93,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
                 pnrs[total] = rs.getString("pnr");
                 total++;
                 bookingList.add(String.format("%-7s %-7s %-22s %-17s %-5s %-10s %s", rs.getString("pnr"), rs.getString("flight_no"),
-                        rs.getString("source") + " -> " + rs.getString("destination"), rs.getString("departure_time").substring(0, 16),
+                        rs.getString("source") + " -> " + rs.getString("destination"), DateTimeFormat.format(rs.getTimestamp("departure_time")),
                         rs.getString("seat_no"), rs.getString("status"), rs.getString("passenger_name")));
             }
             con.close();
@@ -106,7 +106,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         }
     }
 
-    // event handling method
+
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -122,7 +122,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         }
     }
 
-    // when a booking is clicked in the list, show its details
+
     public void itemStateChanged(ItemEvent e)
     {
         try
@@ -135,7 +135,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         }
     }
 
-    // window events (only closing is used, WindowListener needs all 7 methods)
+
     public void windowClosing(WindowEvent we)
     {
         dispose();
