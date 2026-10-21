@@ -99,7 +99,7 @@ function App() {
             <div className="result success">
               <b>Payment Successful</b>
               Your booking is confirmed. PNR: <b>{payment.pnr}</b>
-              <br />Check the laptop for your ticket and email status.
+              <br />Your ticket is shown on the laptop and sent to your email.
             </div>
           )}
 

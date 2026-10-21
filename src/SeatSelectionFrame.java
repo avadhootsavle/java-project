@@ -23,7 +23,7 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
 
         l1 = new Label("SELECT YOUR SEATS", Label.CENTER);
         l2 = new Label("", Label.CENTER);
-        l3 = new Label("White = Available     Grey = Selected     Black (X) = Booked", Label.CENTER);
+        l3 = new Label("White = Available     Grey = Selected     Blacj (X) = Booked", Label.CENTER);
         selectedLabel = new Label("", Label.CENTER);
         continueBtn = new Button("Continue");
         backBtn = new Button("Back");
