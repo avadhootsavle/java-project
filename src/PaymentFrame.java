@@ -5,8 +5,6 @@ import com.google.zxing.*;
 import com.google.zxing.common.*;
 import com.google.zxing.qrcode.*;
 
-
-
 public class PaymentFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l3, l4, l5, l6, l7, statusLabel;
@@ -31,9 +29,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         gst = fare * 5 / 100;
         amount = fare + gst;
 
-
         setLayout(new GridLayout(1, 2, 10, 0));
-
 
         l1 = new Label("QR PAYMENT", Label.CENTER);
         l3 = new Label("");
@@ -46,7 +42,6 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         cancelBtn = new Button("Cancel");
         p1 = new Panel(new GridLayout(8, 1, 0, 5));
         p2 = new Panel(new GridLayout(1, 2, 10, 0));
-
 
         qrCanvas = new Canvas()
         {
@@ -67,7 +62,6 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
             }
         };
 
-
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -76,10 +70,8 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         l6.setFont(new Font("Arial", Font.BOLD, 20));
         statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
 
-
         retryBtn.addActionListener(this);
         cancelBtn.addActionListener(this);
-
 
         p2.add(retryBtn);
         p2.add(cancelBtn);
@@ -94,9 +86,7 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         add(p1);
         add(qrCanvas);
 
-
         addWindowListener(this);
-
 
         setTitle("Payment");
         setSize(900, 450);
@@ -105,7 +95,6 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
 
         newPayment();
     }
-
 
     void newPayment()
     {
@@ -123,7 +112,6 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
             ps.executeUpdate();
             con.close();
 
-
             String url = "http://" + PaymentServer.getLaptopIp() + ":5173/?ref=" + ref;
             qr = new QRCodeWriter().encode(url, BarcodeFormat.QR_CODE, 1, 1);
             qrCanvas.repaint();
@@ -140,7 +128,6 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         }
     }
 
-
     public String paymentSuccess() throws Exception
     {
         try
@@ -149,14 +136,12 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         }
         catch (Exception e)
         {
-
             PaymentServer.update("UPDATE payments SET status = 'FAILED' WHERE payment_ref = ?", ref);
             statusLabel.setForeground(Color.red);
             statusLabel.setText("Booking failed: " + e.getMessage());
             detailsFrame.seatFrame.loadSeats();
             throw e;
         }
-
 
         Connection con = DBConnection.getConnection();
         PreparedStatement ps = con.prepareStatement("UPDATE payments SET pnr = ? WHERE payment_ref = ?");
@@ -170,7 +155,6 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         statusLabel.setText("PAYMENT SUCCESSFUL!  PNR: " + pnr);
         return pnr;
     }
-
 
     public void makeTicket()
     {
@@ -191,14 +175,12 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
         PaymentServer.current = null;
     }
 
-
     public void paymentFailed()
     {
         statusLabel.setForeground(Color.red);
         statusLabel.setText("PAYMENT FAILED. Click Retry Payment.");
         retryBtn.setEnabled(true);
     }
-
 
     public void actionPerformed(ActionEvent e)
     {
@@ -216,13 +198,11 @@ public class PaymentFrame extends Frame implements ActionListener, WindowListene
             detailsFrame.bookingDone();
         else
         {
-
             PaymentServer.update("UPDATE payments SET status = 'FAILED' WHERE payment_ref = ? AND status = 'PENDING'", ref);
             PaymentServer.current = null;
         }
         dispose();
     }
-
 
     public void windowClosing(WindowEvent we)
     {

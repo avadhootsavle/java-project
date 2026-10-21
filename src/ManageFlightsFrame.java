@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class ManageFlightsFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3;
@@ -15,9 +14,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
 
     public ManageFlightsFrame()
     {
-
         setLayout(new GridLayout(2, 1, 0, 5));
-
 
         l1 = new Label("MANAGE FLIGHTS", Label.CENTER);
         l2 = new Label("Flight No / ID");
@@ -43,14 +40,12 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         l3.setFont(new Font("Monospaced", Font.BOLD, 14));
         flightList.setFont(new Font("Monospaced", Font.PLAIN, 14));
 
-
         searchBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         addBtn.addActionListener(this);
         updateBtn.addActionListener(this);
         deleteBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         p2.add(l2);
         p2.add(searchTf);
@@ -67,9 +62,7 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         add(p1);
         add(flightList);
 
-
         addWindowListener(this);
-
 
         setTitle("Manage Flights");
         setSize(900, 600);
@@ -78,7 +71,6 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
 
         loadFlights("");
     }
-
 
     public void loadFlights(String search)
     {
@@ -111,7 +103,6 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         }
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -136,7 +127,6 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
         {
             try
             {
-
                 Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement("DELETE FROM flights WHERE flight_id = ? AND NOT EXISTS "
                         + "(SELECT * FROM bookings WHERE flight_id = ? AND status = 'CONFIRMED')");
@@ -156,7 +146,6 @@ public class ManageFlightsFrame extends Frame implements ActionListener, WindowL
             }
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

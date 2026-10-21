@@ -8,16 +8,13 @@ public class AdminDashboard extends Frame implements ActionListener, WindowListe
 
     public AdminDashboard(String adminName)
     {
-
         setLayout(new GridLayout(5, 1, 10, 10));
-
 
         l1 = new Label("ADMIN DASHBOARD", Label.CENTER);
         l2 = new Label("Welcome, " + adminName, Label.CENTER);
         manageBtn = new Button("Manage Flights");
         bookingsBtn = new Button("View Bookings");
         logoutBtn = new Button("Logout");
-
 
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
@@ -26,11 +23,9 @@ public class AdminDashboard extends Frame implements ActionListener, WindowListe
         l1.setFont(new Font("Arial", Font.BOLD, 22));
         l2.setFont(new Font("Arial", Font.BOLD, 15));
 
-
         manageBtn.addActionListener(this);
         bookingsBtn.addActionListener(this);
         logoutBtn.addActionListener(this);
-
 
         add(l1);
         add(l2);
@@ -38,16 +33,13 @@ public class AdminDashboard extends Frame implements ActionListener, WindowListe
         add(bookingsBtn);
         add(logoutBtn);
 
-
         addWindowListener(this);
-
 
         setTitle("Admin Dashboard");
         setSize(420, 360);
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
 
     public void actionPerformed(ActionEvent e)
     {
@@ -63,7 +55,6 @@ public class AdminDashboard extends Frame implements ActionListener, WindowListe
             dispose();
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

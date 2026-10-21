@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class AvailableFlightsFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4;
@@ -19,9 +18,7 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
     {
         customerId = id;
 
-
         setLayout(new GridLayout(2, 1, 0, 5));
-
 
         l1 = new Label("AVAILABLE FLIGHTS", Label.CENTER);
         l2 = new Label("From", Label.RIGHT);
@@ -49,12 +46,10 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         fromChoice.add("All");
         toChoice.add("All");
 
-
         filterBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         bookBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         p2.add(l2);
         p2.add(fromChoice);
@@ -71,15 +66,12 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         add(p1);
         add(flightList);
 
-
         addWindowListener(this);
-
 
         setTitle("Available Flights");
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setVisible(true);
-
 
         try
         {
@@ -99,7 +91,6 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         }
         loadFlights("All", "All");
     }
-
 
     void loadFlights(String from, String to)
     {
@@ -141,7 +132,6 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         }
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -164,7 +154,6 @@ public class AvailableFlightsFrame extends Frame implements ActionListener, Wind
         else
             new SeatSelectionFrame(this, customerId, flightIds[i]);
     }
-
 
     public void windowClosing(WindowEvent we)
     {

@@ -10,9 +10,7 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
 
     public RegisterFrame()
     {
-
         setLayout(new GridLayout(7, 2, 0, 10));
-
 
         l1 = new Label("   CREATE ACCOUNT");
         l7 = new Label("");
@@ -29,7 +27,6 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         registerBtn = new Button("Register");
         backBtn = new Button("Back");
 
-
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -39,10 +36,8 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         passTf.setEchoChar('*');
         confirmTf.setEchoChar('*');
 
-
         registerBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         add(l1);
         add(l7);
@@ -59,16 +54,13 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         add(registerBtn);
         add(backBtn);
 
-
         addWindowListener(this);
-
 
         setTitle("Customer Registration");
         setSize(480, 450);
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
 
     public void actionPerformed(ActionEvent e)
     {
@@ -77,7 +69,6 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
         String email = emailTf.getText().trim();
         String phone = phoneTf.getText().trim();
         String pass = passTf.getText();
-
 
         if (btn == backBtn)
             dispose();
@@ -113,7 +104,6 @@ public class RegisterFrame extends Frame implements ActionListener, WindowListen
             }
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

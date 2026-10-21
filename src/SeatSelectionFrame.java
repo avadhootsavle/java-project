@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class SeatSelectionFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, selectedLabel;
@@ -20,13 +19,11 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
         customerId = cid;
         flightId = fid;
 
-
         setLayout(new GridLayout(2, 1, 0, 5));
-
 
         l1 = new Label("SELECT YOUR SEATS", Label.CENTER);
         l2 = new Label("", Label.CENTER);
-        l3 = new Label("White = Available     Grey = Selected     Blacj (X) = Booked", Label.CENTER);
+        l3 = new Label("White = Available     Grey = Selected     Black (X) = Booked", Label.CENTER);
         selectedLabel = new Label("", Label.CENTER);
         continueBtn = new Button("Continue");
         backBtn = new Button("Back");
@@ -43,10 +40,8 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
         l2.setFont(new Font("Arial", Font.BOLD, 15));
         selectedLabel.setFont(new Font("Arial", Font.BOLD, 15));
 
-
         continueBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         p2.add(continueBtn);
         p2.add(backBtn);
@@ -58,9 +53,7 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
         add(p1);
         add(map);
 
-
         addWindowListener(this);
-
 
         setTitle("Select Seats");
         setSize(1150, 800);
@@ -69,7 +62,6 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
 
         loadSeats();
     }
-
 
     public void loadSeats()
     {
@@ -83,7 +75,6 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
             price = rs1.getDouble("price");
             l2.setText(rs1.getString("flight_no") + "   |   " + rs1.getString("source") + " -> " + rs1.getString("destination")
                     + "   |   " + DateTimeFormat.format(rs1.getTimestamp("departure_time")) + "   |   Rs. " + price + " per seat");
-
 
             int n = rs1.getInt("total_seats");
             seatIds = new int[n];
@@ -112,7 +103,6 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
         updateSelected();
     }
 
-
     public void updateSelected()
     {
         String seats = "";
@@ -126,7 +116,6 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
             selectedLabel.setText("Selected seats: " + seats + "  |   Total: Rs. " + (price * map.count) + " + 5% GST");
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -137,7 +126,6 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
             new MessageBox(this, "Please select at least one seat");
         else
         {
-
             int[] ids = new int[map.count];
             String[] nos = new String[map.count];
             int j = 0;
@@ -153,7 +141,6 @@ public class SeatSelectionFrame extends Frame implements ActionListener, WindowL
             new PassengerDetailsFrame(this, flightsFrame, customerId, flightId, ids, nos, price);
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

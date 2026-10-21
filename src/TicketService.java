@@ -59,7 +59,7 @@ public class TicketService
         cs.beginText();
         cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 22);
         cs.newLineAtOffset(50, 730);
-        cs.showText("Gowardhan Airline ");
+        cs.showText("Gowardhan Airlines");
         cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 14);
         cs.newLineAtOffset(0, -25);
         cs.showText("E-Ticket");
@@ -75,7 +75,7 @@ public class TicketService
         }
         cs.showText("");
         cs.newLine();
-        cs.showText("Thank You ,Pls be on time dont be late !");
+        cs.showText("Thank you for booking with us. Please arrive on time.");
         cs.endText();
 
         cs.close();
@@ -100,7 +100,6 @@ public class TicketService
         ps.setString(1, pnr);
         ResultSet rs = ps.executeQuery();
         rs.next();
-        String name = rs.getString("name");
         String to = rs.getString("email");
         con.close();
 

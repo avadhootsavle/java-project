@@ -1,40 +1,32 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
 public class MessageBox extends Dialog implements ActionListener, WindowListener
 {
     Button okBtn, yesBtn, noBtn;
     public boolean yes = false;
-
 
     public MessageBox(Frame f, String msg)
     {
         this(f, msg, false);
     }
 
-
     public MessageBox(Frame f, String msg, boolean askYesNo)
     {
         super(f, "Message", true);
 
-
         setLayout(new GridLayout(0, 1, 5, 5));
-
 
         okBtn = new Button("   OK   ");
         yesBtn = new Button("   Yes   ");
         noBtn = new Button("   No   ");
 
-
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
-
 
         okBtn.addActionListener(this);
         yesBtn.addActionListener(this);
         noBtn.addActionListener(this);
-
 
         String[] lines = msg.split("\n");
         for (int i = 0; i < lines.length; i++)
@@ -47,7 +39,6 @@ public class MessageBox extends Dialog implements ActionListener, WindowListener
         else
             add(okBtn);
 
-
         addWindowListener(this);
 
         pack();
@@ -56,7 +47,6 @@ public class MessageBox extends Dialog implements ActionListener, WindowListener
         setVisible(true);
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -64,7 +54,6 @@ public class MessageBox extends Dialog implements ActionListener, WindowListener
             yes = true;
         dispose();
     }
-
 
     public void windowClosing(WindowEvent we)
     {

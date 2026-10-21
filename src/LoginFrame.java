@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class LoginFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4;
@@ -14,12 +13,10 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
     {
         type = t;
 
-
         if (type.equals("Admin"))
             setLayout(new GridLayout(4, 2, 0, 10));
         else
             setLayout(new GridLayout(5, 2, 0, 10));
-
 
         l1 = new Label("   " + type.toUpperCase() + " LOGIN");
         l4 = new Label("");
@@ -34,7 +31,6 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
         registerBtn = new Button("Register (new user)");
         backBtn = new Button("Back");
 
-
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -43,11 +39,9 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
         l4.setBackground(new Color(22, 54, 110));
         passTf.setEchoChar('*');
 
-
         loginBtn.addActionListener(this);
         registerBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         add(l1);
         add(l4);
@@ -61,16 +55,13 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
             add(registerBtn);
         }
 
-
         addWindowListener(this);
-
 
         setTitle(type + " Login");
         setSize(450, 280);
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
 
     public void actionPerformed(ActionEvent e)
     {
@@ -99,7 +90,6 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
                 ps.setString(1, user);
                 ResultSet rs = ps.executeQuery();
 
-
                 if (!rs.next() || !rs.getString("password").equals(pass))
                     new MessageBox(this, "Wrong login details");
                 else
@@ -119,7 +109,6 @@ public class LoginFrame extends Frame implements ActionListener, WindowListener
             }
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

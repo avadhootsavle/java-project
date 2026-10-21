@@ -11,16 +11,13 @@ public class CustomerDashboard extends Frame implements ActionListener, WindowLi
     {
         customerId = id;
 
-
         setLayout(new GridLayout(5, 1, 10, 10));
-
 
         l1 = new Label("CUSTOMER DASHBOARD", Label.CENTER);
         l2 = new Label("Welcome, " + name, Label.CENTER);
         flightsBtn = new Button("View Flights & Book Ticket");
         bookingsBtn = new Button("My Bookings");
         logoutBtn = new Button("Logout");
-
 
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
@@ -29,11 +26,9 @@ public class CustomerDashboard extends Frame implements ActionListener, WindowLi
         l1.setFont(new Font("Arial", Font.BOLD, 22));
         l2.setFont(new Font("Arial", Font.BOLD, 15));
 
-
         flightsBtn.addActionListener(this);
         bookingsBtn.addActionListener(this);
         logoutBtn.addActionListener(this);
-
 
         add(l1);
         add(l2);
@@ -41,16 +36,13 @@ public class CustomerDashboard extends Frame implements ActionListener, WindowLi
         add(bookingsBtn);
         add(logoutBtn);
 
-
         addWindowListener(this);
-
 
         setTitle("Customer Dashboard");
         setSize(420, 360);
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
 
     public void actionPerformed(ActionEvent e)
     {
@@ -66,7 +58,6 @@ public class CustomerDashboard extends Frame implements ActionListener, WindowLi
             dispose();
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

@@ -2,8 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
-
 public class PassengerDetailsFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4, l5, l6, l7, l8;
@@ -32,10 +30,7 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         age = new int[count];
         genders = new String[count];
 
-
-
         setLayout(new GridLayout(count + 3, 4, 0, 8));
-
 
         l1 = new Label("   PASSENGERS");
         l2 = new Label(count + " passenger(s)");
@@ -47,7 +42,6 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         l8 = new Label("");
         payBtn = new Button("Proceed to Payment");
         backBtn = new Button("Back");
-
 
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
@@ -66,10 +60,8 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         l5.setFont(new Font("Arial", Font.BOLD, 15));
         l6.setFont(new Font("Arial", Font.BOLD, 15));
 
-
         payBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         add(l1);
         add(l2);
@@ -79,7 +71,6 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         add(l4);
         add(l5);
         add(l6);
-
 
         for (int i = 0; i < count; i++)
         {
@@ -95,16 +86,13 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         add(payBtn);
         add(backBtn);
 
-
         addWindowListener(this);
-
 
         setTitle("Passenger Details");
         setSize(760, 160 + count * 55);
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
 
     public void actionPerformed(ActionEvent e)
     {
@@ -114,7 +102,6 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
             dispose();
             return;
         }
-
 
         String seats = "";
         for (int i = 0; i < count; i++)
@@ -141,11 +128,8 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
             seats = seats + seatNos[i] + " ";
         }
 
-
         new PaymentFrame(this, customerId, flightId, seats.trim(), count, price * count);
     }
-
-
 
     public String confirmBooking() throws Exception
     {
@@ -154,14 +138,12 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         {
             con.setAutoCommit(false);
 
-
             PreparedStatement ps1 = con.prepareStatement("SELECT price FROM flights WHERE flight_id = ? AND departure_time > NOW() FOR UPDATE");
             ps1.setInt(1, flightId);
             ResultSet rs = ps1.executeQuery();
             if (!rs.next())
                 throw new Exception("This flight has already departed");
             double ticketPrice = rs.getDouble("price");
-
 
             PreparedStatement ps2 = con.prepareStatement("UPDATE seats SET status = 'BOOKED' WHERE seat_id = ? AND status = 'AVAILABLE'");
             for (int i = 0; i < count; i++)
@@ -171,12 +153,10 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
                     throw new Exception("Sorry, seat " + seatNos[i] + " was just booked by someone else");
             }
 
-
             PreparedStatement ps3 = con.prepareStatement("UPDATE flights SET available_seats = available_seats - ? WHERE flight_id = ?");
             ps3.setInt(1, count);
             ps3.setInt(2, flightId);
             ps3.executeUpdate();
-
 
             String pnr = TicketService.randomCode(6);
             PreparedStatement ps4 = con.prepareStatement("SELECT pnr FROM bookings WHERE pnr = ?");
@@ -186,7 +166,6 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
                 pnr = TicketService.randomCode(6);
                 ps4.setString(1, pnr);
             }
-
 
             PreparedStatement ps5 = con.prepareStatement("INSERT INTO bookings (pnr, customer_id, flight_id, seat_id, passenger_name, "
                     + "passenger_age, passenger_gender, status, ticket_price) VALUES (?, ?, ?, ?, ?, ?, ?, 'CONFIRMED', ?)");
@@ -203,20 +182,17 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
                 ps5.executeUpdate();
             }
 
-
             con.commit();
             con.close();
             return pnr;
         }
         catch (Exception e)
         {
-
             con.rollback();
             con.close();
             throw e;
         }
     }
-
 
     public void bookingDone()
     {
@@ -225,7 +201,6 @@ public class PassengerDetailsFrame extends Frame implements ActionListener, Wind
         seatFrame.dispose();
         dispose();
     }
-
 
     public void windowClosing(WindowEvent we)
     {

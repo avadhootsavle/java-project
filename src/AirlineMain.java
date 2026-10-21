@@ -2,25 +2,20 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class AirlineMain extends Frame implements ActionListener, WindowListener
 {
-
     Label l1, l2;
     Button adminBtn, customerBtn, exitBtn;
 
     public AirlineMain()
     {
-
         setLayout(new GridLayout(5, 1, 10, 10));
 
-
         l1 = new Label("Gowardhan Airlines", Label.CENTER);
-        l2 = new Label("Please choose how you want to login", Label.CENTER);
+        l2 = new Label("Choose Admin or Customer Login", Label.CENTER);
         adminBtn = new Button("Admin Login");
         customerBtn = new Button("Customer Login");
         exitBtn = new Button("Exit");
-
 
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
@@ -29,11 +24,9 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         l1.setFont(new Font("Arial", Font.BOLD, 26));
         l2.setFont(new Font("Arial", Font.BOLD, 15));
 
-
         adminBtn.addActionListener(this);
         customerBtn.addActionListener(this);
         exitBtn.addActionListener(this);
-
 
         add(l1);
         add(l2);
@@ -41,15 +34,12 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         add(customerBtn);
         add(exitBtn);
 
-
         addWindowListener(this);
-
 
         setTitle("Gowardhan Airlines");
         setSize(450, 360);
         setLocationRelativeTo(null);
         setVisible(true);
-
 
         try
         {
@@ -64,16 +54,15 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         }
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
 
         if (btn == adminBtn){
-          LoginFrame lf =  new LoginFrame("Admin");
+          new LoginFrame("Admin");
         }
         else if (btn == customerBtn){
-          LoginFrame lf =   new LoginFrame("Customer");
+          new LoginFrame("Customer");
         }
         else
             System.exit(0);
@@ -81,7 +70,6 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
 
     public static void main(String args[])
     {
-
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
         {
             public void eventDispatched(AWTEvent ev)
@@ -90,7 +78,6 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
                 int key = ke.getKeyCode();
                 if (ke.getID() != KeyEvent.KEY_PRESSED || !ke.isControlDown() || key < 'A' || key > 'Z')
                     return;
-
 
                 Component c = ke.getComponent();
                 while (c != null && !(c instanceof Window))
@@ -111,7 +98,6 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         new AirlineMain();
     }
 
-
     static Button findButton(Container box, int key)
     {
         Component[] list = box.getComponents();
@@ -128,7 +114,6 @@ public class AirlineMain extends Frame implements ActionListener, WindowListener
         }
         return null;
     }
-
 
     public void windowClosing(WindowEvent we)
     {

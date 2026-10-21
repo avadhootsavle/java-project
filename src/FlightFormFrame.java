@@ -3,7 +3,6 @@ import java.awt.event.*;
 import java.sql.*;
 import java.time.*;
 
-
 public class FlightFormFrame extends Frame implements ActionListener, WindowListener
 {
     Label l1, l2, l3, l4, l5, l6, l7, l8, l9, l10;
@@ -17,9 +16,7 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         parent = mf;
         flightId = id;
 
-
         setLayout(new GridLayout(10, 2, 0, 8));
-
 
         if (flightId == 0)
             l1 = new Label("   ADD NEW FLIGHT");
@@ -45,7 +42,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         saveBtn = new Button("Save Flight");
         backBtn = new Button("Back");
 
-
         setBackground(new Color(232, 240, 250));
         setFont(new Font("Arial", Font.PLAIN, 15));
         l1.setBackground(new Color(22, 54, 110));
@@ -53,10 +49,8 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         l1.setFont(new Font("Arial", Font.BOLD, 22));
         l10.setBackground(new Color(22, 54, 110));
 
-
         saveBtn.addActionListener(this);
         backBtn.addActionListener(this);
-
 
         add(l1);
         add(l10);
@@ -79,15 +73,12 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         add(saveBtn);
         add(backBtn);
 
-
         addWindowListener(this);
-
 
         setTitle("Flight Details");
         setSize(600, 560);
         setLocationRelativeTo(null);
         setVisible(true);
-
 
         if (flightId != 0)
         {
@@ -115,7 +106,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         }
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -124,7 +114,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
             dispose();
             return;
         }
-
 
         LocalDateTime dep, arr;
         double price;
@@ -156,7 +145,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
             saveFlight(price, seats);
     }
 
-
     void saveFlight(double price, int seats)
     {
         Connection con = null;
@@ -169,7 +157,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
 
             if (flightId != 0)
             {
-
                 PreparedStatement ps1 = con.prepareStatement("SELECT total_seats, available_seats, (SELECT COUNT(*) FROM bookings "
                         + "WHERE flight_id = ? AND status = 'CONFIRMED') AS booked FROM flights WHERE flight_id = ? FOR UPDATE");
                 ps1.setInt(1, flightId);
@@ -210,12 +197,10 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
                 ps.setInt(10, flightId);
             ps.executeUpdate();
 
-
             int id = flightId;
             ResultSet keys = ps.getGeneratedKeys();
             if (flightId == 0 && keys.next())
                 id = keys.getInt(1);
-
 
             PreparedStatement ps3 = con.prepareStatement("INSERT INTO seats (flight_id, seat_no) VALUES (?, ?)");
             for (int i = 0; makeSeats && i < seats; i++)
@@ -233,7 +218,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
         }
         catch (Exception e)
         {
-
             try
             {
                 con.rollback();
@@ -246,7 +230,6 @@ public class FlightFormFrame extends Frame implements ActionListener, WindowList
             new MessageBox(this, "Error: " + e.getMessage());
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

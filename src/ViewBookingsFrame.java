@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class ViewBookingsFrame extends Frame implements ActionListener, ItemListener, WindowListener
 {
     Label l1, l2, l3;
@@ -16,9 +15,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
 
     public ViewBookingsFrame()
     {
-
         setLayout(new GridLayout(3, 1, 0, 5));
-
 
         l1 = new Label("ALL BOOKINGS", Label.CENTER);
         l2 = new Label("PNR", Label.RIGHT);
@@ -43,12 +40,10 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         detailsArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         detailsArea.setEditable(false);
 
-
         searchBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         backBtn.addActionListener(this);
         bookingList.addItemListener(this);
-
 
         p2.add(l2);
         p2.add(pnrTf);
@@ -62,9 +57,7 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         add(bookingList);
         add(detailsArea);
 
-
         addWindowListener(this);
-
 
         setTitle("All Bookings");
         setSize(900, 720);
@@ -73,7 +66,6 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
 
         loadBookings("");
     }
-
 
     void loadBookings(String pnr)
     {
@@ -106,7 +98,6 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         }
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -122,7 +113,6 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
         }
     }
 
-
     public void itemStateChanged(ItemEvent e)
     {
         try
@@ -134,7 +124,6 @@ public class ViewBookingsFrame extends Frame implements ActionListener, ItemList
             detailsArea.setText("Error: " + ex.getMessage());
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

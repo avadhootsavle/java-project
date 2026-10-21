@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 
-
 public class MyBookingsFrame extends Frame implements ActionListener, ItemListener, WindowListener
 {
     Label l1, l2, l3;
@@ -21,9 +20,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
     {
         customerId = id;
 
-
         setLayout(new GridLayout(3, 1, 0, 5));
-
 
         l1 = new Label("MY BOOKINGS", Label.CENTER);
         l2 = new Label("PNR", Label.RIGHT);
@@ -51,14 +48,12 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         detailsArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         detailsArea.setEditable(false);
 
-
         searchBtn.addActionListener(this);
         showAllBtn.addActionListener(this);
         cancelBtn.addActionListener(this);
         ticketBtn.addActionListener(this);
         backBtn.addActionListener(this);
         bookingList.addItemListener(this);
-
 
         p2.add(l2);
         p2.add(pnrTf);
@@ -75,9 +70,7 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         add(bookingList);
         add(detailsArea);
 
-
         addWindowListener(this);
-
 
         setTitle("My Bookings");
         setSize(1000, 740);
@@ -86,7 +79,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
 
         loadBookings("");
     }
-
 
     void loadBookings(String pnr)
     {
@@ -122,7 +114,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
     }
 
-
     public void actionPerformed(ActionEvent e)
     {
         Button btn = (Button) e.getSource();
@@ -141,7 +132,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             new MessageBox(this, "Please select a booking from the list first");
         else if (btn == ticketBtn)
         {
-
             String msg = "";
             try
             {
@@ -160,7 +150,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             cancelTicket(i);
     }
 
-
     void cancelTicket(int i)
     {
         Connection con = null;
@@ -168,7 +157,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         {
             con = DBConnection.getConnection();
             con.setAutoCommit(false);
-
 
             PreparedStatement ps1 = con.prepareStatement("SELECT b.*, f.departure_time < NOW() AS departed FROM bookings b "
                     + "JOIN flights f ON b.flight_id = f.flight_id WHERE b.booking_id = ? AND b.customer_id = ? FOR UPDATE");
@@ -180,7 +168,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             if (rs.getInt("departed") == 1)
                 throw new Exception("Flight has already departed, cannot cancel");
 
-
             PreparedStatement ps2 = con.prepareStatement("UPDATE bookings SET status = 'CANCELLED' WHERE booking_id = ?");
             ps2.setInt(1, bookingIds[i]);
             ps2.executeUpdate();
@@ -191,7 +178,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             ps4.setInt(1, rs.getInt("flight_id"));
             ps4.executeUpdate();
 
-
             con.commit();
             con.close();
             new MessageBox(this, "Ticket of " + names[i] + " cancelled. Seat has been released.");
@@ -199,7 +185,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
         catch (Exception e)
         {
-
             try
             {
                 con.rollback();
@@ -213,7 +198,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
         }
     }
 
-
     public void itemStateChanged(ItemEvent e)
     {
         try
@@ -225,7 +209,6 @@ public class MyBookingsFrame extends Frame implements ActionListener, ItemListen
             detailsArea.setText("Error: " + ex.getMessage());
         }
     }
-
 
     public void windowClosing(WindowEvent we)
     {

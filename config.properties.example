@@ -1,4 +1,0 @@
-# Gmail settings for sending tickets on email
-# Use a Gmail App Password here, not your normal Gmail password
-mail.username=your_email@gmail.com
-mail.password=your_gmail_app_password
